@@ -1,0 +1,134 @@
+.content{
+    background-color: white;
+    height: 79vh;
+    width: 60vw;
+    border-radius: 4px;
+    position: absolute;
+    left: 300px;
+    top: 100px
+}
+.table-btn-edit{
+    position: relative;
+    top: 10px;
+    background-color: blue;
+    color: white;
+    /* padding-top: 20px; */
+    left: 150px;
+    border-style: none;
+    outline: none;
+    padding: 5px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    border-radius: 3px;
+}
+.table-btn-update{
+    position: relative;
+    top: 10px;
+    background-color: orange;
+    color: white;
+    /* padding-top: 20px; */
+    left: 40px;
+    border-style: none;
+    outline: none;
+    padding: 5px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+ /* .content-p{
+    overflow: hidden;
+ } */
+ .emp-form-table{
+    position: relative;
+    left: 80px;
+    width: 90%;
+    top: 20px;
+}
+.emp-form-table2{
+    position: relative;
+    left: 90px;
+    /* width: 120%; */
+    top: 20px;
+}
+/* .register-table{
+    background-color: white;
+    position: relative;
+    width: 61%;
+    height: 80vh ;
+    left: 250px;
+    top: 100px;
+    border-radius: 5px;
+} */
+
+/* .form-container {
+    display: flex;
+    justify-content: space-between;
+} */
+
+/* .form-left{
+    width: 50%;
+}
+.form-right {
+    width: 60%;
+} */
+.td-label{
+    text-align: left;
+    width: 35%;
+}
+.td-label-1{
+    text-align: left;
+    width: 40%;
+}
+.inputField{
+    outline-color: skyblue;
+    /* width: 20%; */
+    padding: 3px;
+    border-radius: 3px;
+} 
+/* .table-btn{
+    position: relative;
+    top: 0px;
+    left: 150px;
+    outline: none;    
+    background-color: lightgreen;
+    border-radius: 2px;
+    border-style: none;
+    padding: 5px;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
+}
+.error{
+    color: red;
+} */
+
+
+.button-container {
+    position: absolute;
+    text-align: center;
+    /* margin-top: 20px; */
+    top: 530px;
+    left: 250px;
+}
+
+.table-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.table-btn:hover {
+    background-color: #45a049;
+}
+
+
+.td-label, .td-input {
+    padding: 5px;
+}
+
+.error {
+    color: red;
+}

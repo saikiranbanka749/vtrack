@@ -1,0 +1,76 @@
+.Header-p {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(0, 0, 160);
+  color: white;
+  position: fixed;
+  width: 100%;
+  font-weight: bolder;
+  padding: 10px;
+  /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+}
+.Header-logo {
+  display: flex;
+  align-items: center;
+  margin-right: 15px; 
+}
+
+.Header-text {
+  position: absolute;
+  font-size: 27px;
+  left: 630px;
+  top: 20px;
+}
+.Header-btn{
+  padding-right: 50px;
+  padding-top: 10px;
+}
+.Header-btn .btn-1 {
+  background-color:white; 
+  color: black;
+  border: none;
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  font-size: 16px; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+}
+
+.Header-btn .btn-1:hover {
+  background-color: #0056b3; 
+}
+
+.Header-btn .btn-1:active {
+  background-color: #004494; 
+}
+
+.Header-btn .btn-1:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); 
+}
+
+.Header-btn .btn-2 {
+  background-color:white; 
+  margin-right: 43px;
+  color: black;
+  border: none;
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  font-size: 16px; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+}
+.Header-btn .btn-2:hover {
+  background-color: #0056b3; 
+}
+
+.Header-btn .btn-2:active {
+  background-color: #004494; 
+}
+
+.Header-btn .btn-2:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); 
+}
+
+
