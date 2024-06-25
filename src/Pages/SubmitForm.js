@@ -1,15 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { empDetailsSubmit } from './EmployeeDetailsInputs';
 import axios from 'axios';
 import emailjs from '@emailjs/browser';
 import "../CSS/SubmitForm.css";
+import { axiosInstance } from '../Components/ApiCalls/BaseApIUrl';
+
+const initialData = {
+    e_name: '',
+    email: '',
+    e_role: '',
+    designation: "",
+    manager: "",
+    e_location: "",
+    contact: '',
+    gender: [],
+    project_name: '',
+    joining_date: '',
+    relieving_date: '',
+    blood_group: '',
+    photo: null,
+    status: '',
+    updated_date: '',
+    dob: '',
+    anniversary_date: '',
+    father_name: '',
+    mother_name: '',
+    present_address: "",
+    permenant_address: "",
+    family_contact: ""
+};
 
 const SubmitForm = () => {
-    const [inputData, setInputData] = useState({});
+    const [inputData, setInputData] = useState(initialData);
     const [empDetailsEdit, setEmpDetailsEdit] = useState(empDetailsSubmit);
     const [errors, setErrors] = useState({});
     const [randomData, setRandomData] = useState("");
-
     const [employeeID, setEmployeeID] = useState('');
 
     const validateEmployeeID = (value) => {
@@ -21,11 +46,10 @@ const SubmitForm = () => {
         const { value } = event.target;
         if (validateEmployeeID(value)) {
             setErrors(prevErrors => ({ ...prevErrors, employeeID: '' }));
-            setEmployeeID(value);
         } else {
             setErrors(prevErrors => ({ ...prevErrors, employeeID: 'Employee ID must start with "VEN" followed by a number.' }));
-            setEmployeeID(value);
         }
+        setEmployeeID(value);
     };
 
     const onChangeHandler = (e) => {
@@ -34,7 +58,7 @@ const SubmitForm = () => {
         let error = '';
 
         if (type === "checkbox") {
-            const existingValues = inputField.value || [];
+            const existingValues = inputData[name] || [];
             if (checked) {
                 existingValues.push(value);
             } else {
@@ -43,7 +67,6 @@ const SubmitForm = () => {
                     existingValues.splice(index, 1);
                 }
             }
-            inputField.value = existingValues;
             setInputData(prevInputData => ({ ...prevInputData, [name]: existingValues }));
         } else if (type === "file") {
             if (files && files.length > 0) {
@@ -51,17 +74,13 @@ const SubmitForm = () => {
                 setInputData(prevInputData => ({ ...prevInputData, [name]: file }));
             }
         } else {
-            inputField.value = value;
             if (type !== "radio" && value.trim() === "") {
                 error = inputField.errMsg;
-            } else {
-                setInputData(prevInputData => ({ ...prevInputData, [name]: value }));
             }
+            setInputData(prevInputData => ({ ...prevInputData, [name]: value }));
         }
-
         setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
     };
-
 
     useEffect(() => {
         let result = '';
@@ -77,13 +96,14 @@ const SubmitForm = () => {
         }
 
         setRandomData(result);
-        console.log("randomData:::", result);
-    }, [])
+    }, []);
+
+    const fileInputRef = useRef(null);
 
     const submitHandler = () => {
         const pwd = randomData;
         const currDate = new Date();
-        const updated_date =` ${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
+        const updated_date = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`;
         const status = "Active";
 
         let isValid = true;
@@ -103,7 +123,7 @@ const SubmitForm = () => {
         };
 
         empDetailsEdit.forEach(input => {
-            if (input.value === "" || (Array.isArray(input.value) && input.value.length === 0)) {
+            if (!inputData[input.name] || (Array.isArray(inputData[input.name]) && inputData[input.name].length === 0)) {
                 newErrors[input.name] = input.errMsg;
                 isValid = false;
             }
@@ -120,8 +140,17 @@ const SubmitForm = () => {
         setErrors(newErrors);
 
         if (isValid) {
-            console.log("clicked.........");
-            console.log(inputData.e_location);
+            // const formData = new FormData();
+            // formData.append("id", employeeID);
+            // Object.keys(inputData).forEach(key => {
+            //     delete inputData.status;
+            //     formData.append(key, inputData[key]);
+            // });
+            // formData.append("status", status);
+            // formData.append("updated_date", updated_date);
+            // formData.append("pwd", pwd);
+
+
             const formData = new FormData();
             formData.append("id", employeeID);
             formData.append("e_name", inputData.e_name);
@@ -146,21 +175,23 @@ const SubmitForm = () => {
             formData.append("permenant_address", inputData.permenant_address);
             formData.append("family_contact", inputData.family_contact);
             formData.append("pwd", pwd);
-            axios.post(`http:///192.168.2.114:3003/employeePortal/post-employeePortal`, formData, {
+            axiosInstance.post(`${process.env.REACT_APP_POST_END_POINT}`, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': sessionStorage.getItem("token")
                 }
             })
                 .then(res => {
-                    setEmpDetailsEdit(empDetailsSubmit.map(ele => {
-                        return { ...ele, value: ""}
-                    }));
-                    setInputData({});
+                    setInputData(initialData);
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                    }
                     setEmployeeID('');
+                    document.querySelectorAll('input[type="radio"]').forEach(radio => (radio.checked = false));
+
                     alert("Data added successfully...");
-                    console.log("Response:", res.data);
                     emailjs.send(serviceId, templateId, templateParams, userId)
-                        .then((res) => {
+                        .then(() => {
                             console.log('Email sent successfully!');
                         })
                         .catch((error) => {
@@ -174,7 +205,6 @@ const SubmitForm = () => {
     return (
         <div className='content-p'>
             <div className='register-table'>
-
                 <div className="form-container">
                     <div className="form-left">
                         <table className='emp-form-table'>
@@ -223,7 +253,7 @@ const SubmitForm = () => {
                                                     <React.Fragment>
                                                         {ele.name !== "relieving_date" && ele.name !== "updated_date" && (
                                                             <>
-                                                                <input name={ele.name} onChange={onChangeHandler} value={ele.value} type={ele.type} className='inputField' />
+                                                                <input name={ele.name} onChange={onChangeHandler} value={inputData[ele.name]} type={ele.type} className='inputField' />
                                                                 <span className="error">{errors[ele.name]}</span>
                                                             </>
                                                         )}
@@ -231,18 +261,23 @@ const SubmitForm = () => {
                                             }
                                             {ele?.type === "select" &&
                                                 <React.Fragment>
-                                                    <select className='inputField' onChange={onChangeHandler} name={ele.name}>
-                                                        <option value="">Select</option>
-                                                        {ele?.Options.map((option, index) => (
-                                                            <option value={option} key={index}>{option}</option>
-                                                        ))}
-                                                    </select>
-                                                    <span className="error">{errors[ele.name]}</span>
+                                                    {
+                                                        ele.name !== "status" &&
+                                                        <>
+                                                            <select className='inputField' onChange={onChangeHandler} name={ele.name} value={inputData[ele.name]}>
+                                                                <option value="">Select</option>
+                                                                {ele?.Options.map((option, index) => (
+                                                                    <option value={option} key={index}>{option}</option>
+                                                                ))}
+                                                            </select>
+                                                            <span className="error">{errors[ele.name]}</span>
+                                                        </>
+                                                    }
                                                 </React.Fragment>
                                             }
                                             {ele?.type === "file" &&
                                                 <React.Fragment>
-                                                    <input type={ele?.type} name={ele.name} accept="image/*" onChange={onChangeHandler} />
+                                                    <input type={ele?.type} name={ele.name} ref={fileInputRef} accept="image/*" onChange={onChangeHandler} />
                                                 </React.Fragment>
                                             }
                                         </td>
@@ -266,17 +301,13 @@ const SubmitForm = () => {
                                         <td className='td-input'>
                                             {ele.type === "file" ? null : ele.type === "radio" ?
                                                 <>
-                                                    {ele.type === "radio" && ele.name !== "status" && (
-                                                        <>
-                                                            {ele?.Options.map((option, index) => (
-                                                                <div key={index}>
-                                                                    <input name={ele.name} onChange={onChangeHandler} type={ele.type} value={option} />
-                                                                    <label>{option}</label>
-                                                                </div>
-                                                            ))}
-                                                            <span className="error">{errors[ele.name]}</span>
-                                                        </>
-                                                    )}
+                                                    {ele?.Options.map((option, index) => (
+                                                        <div key={index}>
+                                                            <input name={ele.name} onChange={onChangeHandler} type={ele.type} value={option} />
+                                                            <label>{option}</label>
+                                                        </div>
+                                                    ))}
+                                                    <span className="error">{errors[ele.name]}</span>
                                                 </>
                                                 :
                                                 ele?.type === "select" ? null :
@@ -284,7 +315,7 @@ const SubmitForm = () => {
                                                     <React.Fragment>
                                                         {ele.name !== "relieving_date" && ele.name !== "updated_date" && (
                                                             <>
-                                                                <input name={ele.name} onChange={onChangeHandler} value={ele.value} type={ele.type} className='inputField' />
+                                                                <input name={ele.name} onChange={onChangeHandler} value={inputData[ele.name]} type={ele.type} className='inputField' />
                                                                 <span className="error">{errors[ele.name]}</span>
                                                             </>
                                                         )}
@@ -292,18 +323,23 @@ const SubmitForm = () => {
                                             }
                                             {ele?.type === "select" &&
                                                 <React.Fragment>
-                                                    <select className='inputField' onChange={onChangeHandler} name={ele.name}>
-                                                        <option value="">Select</option>
-                                                        {ele?.Options.map((option, index) => (
-                                                            <option value={option} key={index}>{option}</option>
-                                                        ))}
-                                                    </select>
-                                                    <span className="error">{errors[ele.name]}</span>
+                                                    {
+                                                        ele.name !== "status" &&
+                                                        <>
+                                                            <select className='inputField' onChange={onChangeHandler} name={ele.name} value={inputData[ele.name]}>
+                                                                <option value="">Select</option>
+                                                                {ele?.Options.map((option, index) => (
+                                                                    <option value={option} key={index}>{option}</option>
+                                                                ))}
+                                                            </select>
+                                                            <span className="error">{errors[ele.name]}</span>
+                                                        </>
+                                                    }
                                                 </React.Fragment>
                                             }
                                             {ele?.type === "file" &&
                                                 <React.Fragment>
-                                                    <input type={ele?.type} name={ele.name} accept="image/*" onChange={onChangeHandler} />
+                                                    <input type={ele?.type} name={ele.name} ref={fileInputRef} accept="image/*" onChange={onChangeHandler} />
                                                 </React.Fragment>
                                             }
                                         </td>
@@ -312,7 +348,7 @@ const SubmitForm = () => {
                             </tbody>
                         </table>
                     </div>
-                    <div className="button-container">
+                    <div style={{ position: "absolute", left: "550px" }} className="button-container">
                         <button onClick={submitHandler} className='table-btn'>New register</button>
                     </div>
                 </div>

@@ -1,8 +1,7 @@
 .Header-p {
   display: flex;
   justify-content: space-between;
-  background-color: rgb(0, 0, 160);
-  color: white;
+  background: linear-gradient(to bottom, #89d0f8 , white );  color: white;
   position: fixed;
   width: 100%;
   font-weight: bolder;
@@ -22,8 +21,8 @@
   top: 20px;
 }
 .Header-btn{
-  padding-right: 50px;
-  padding-top: 10px;
+  /* padding-right: 50px; */
+  padding-top: 5px;
 }
 .Header-btn .btn-1 {
   background-color:white; 
@@ -56,6 +55,8 @@
   border: none;
   padding: 5px 10px; 
   border-radius: 5px; 
+  font-weight: bolder;
+  margin-top: 5px;
   font-size: 16px; 
   cursor: pointer; 
   transition: background-color 0.3s ease; 

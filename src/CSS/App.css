@@ -3,4 +3,5 @@
     width: 100vw;
     background-color: lightgray;
     overflow: hidden;
+    background: url("/public//assets//vensai-bg.jpg");
 }

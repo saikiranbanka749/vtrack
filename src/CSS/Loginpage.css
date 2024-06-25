@@ -1,15 +1,21 @@
 
+.login-p{
+    background: url("/public/assets/vensai-bg.jpg");
+}
 .card-container {
     /* background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(/public/assets/logo_8.jpg.crdownload) no-repeat center center fixed;
     background-size: cover; */
-   background-color:white;
+   /* background-color:white; */
     height: 100vh; 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     /* padding-top: 1%; */
     /* padding-bottom:11%; */
-    flex-grow: 1; 
+    /* justify-content: center; */
+    position: absolute;
+    left: 350px;
+    /* flex-grow: 1;  */
 }
 .card {
     border: 1px solid black;
@@ -37,15 +43,17 @@
 }
 .forget{
     font-size: 15px;
-    color: #000;
+    color: blue;
+    cursor: pointer;
 }
 .login-button{
-    background: black;
+    background: skyblue;
     width: 90px;
     padding: 4px;
     font-family: 'Times New Roman', Times, serif;
-    border-style:"none" ;
+    /* border-style:"none"; */
     border-radius: 3px;
+    border-style: none;
     color: white;
     
    

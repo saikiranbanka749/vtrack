@@ -2,6 +2,9 @@
 import "./CSS/App.css";
 import Router from "./Components/Router";
 import ContentPage from "./Pages/ContentPage";
+import ExtraEmpDetailsForm from "./Pages/ExtraEmpDetailsForm";
+import ChipInput from "./Pages/ExtraEmpDetailsForm";
+import ForgotPwd from "./Pages/ForgotPwd";
 // import Loginpage from "./Pages/Loginpage";
 
 function App() {
@@ -12,6 +15,9 @@ function App() {
       {/* <ContentPage/> */}
       {/* <Loginpage/> */}
       <Router/>
+      {/* <ExtraEmpDetailsForm/> */}
+      {/* <ChipInput/> */}
+      {/* <ForgotPwd/> */}
     </div>
   );
 }

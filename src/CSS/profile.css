@@ -1,92 +1,73 @@
-/* UserProfile.css */
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    height: 100vh; 
-}
-.container1 {
-    position: absolute;
-    width: fit-content;
-    left: 300px;
-   
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  height: 100vh; 
 }
 
 .container2 {
-   
   position: absolute;
-    width: fit-content;
-    left: 500px;
-    top: 100px;
-    
-   /* max-height: 62vh; */
-   /* height: 600px; */
-   
+  width: fit-content;
+  left: 300px;
+  top: 100px;
+  overflow: hidden;
 }
+
 .card2 {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    height: 600px;
-    width: 550px; 
-    text-align: left;
-    border-radius: 15px; 
-    overflow: hidden; 
-    background-color: aliceblue;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  height: 79.1vh;
+  width: 60vw; 
+  text-align: left;
+  border-radius: 15px; 
+  overflow-y: scroll; 
+  background-color: white;
+  padding: 20px; /* Added padding for better spacing */
 }
+
+.img {
+  border-radius: 50%;
+}
+
 .card1 {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    width: 320px; 
-    text-align: left;
-    font-family: arial;
-    border-radius: 15px; 
-    overflow: hidden; 
-    background-color: aliceblue;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  width: 320px; 
+  text-align: left;
+  font-family: arial;
+  border-radius: 15px; 
+  background-color: aliceblue;
 }
 
 .card1 img {
-    width: 100%; 
-    border-top-left-radius: 10px; 
-    border-top-right-radius: 10px; 
+  width: 100%; 
+  border-top-left-radius: 10px; 
+  border-top-right-radius: 10px; 
 }
 
-  /* .card1{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    width: 300px;
-    text-align: left;
-    font-family: arial;
-    margin-right: auto;
-    margin-left: auto;
-  }
-   */
-  .title {
-    color: lightslategray;
-    font-size: 18px;
+.title {
+  color: lightslategray;
+  font-size: 18px;
+}
 
-  }
-  
- .btn {
-    border: none;
-    outline: 0;
-    display: inline-block;
-    padding: 8px;
-    color: white;
-    background-color: #000;
-    text-align: center;
-    cursor: pointer;
-    width: 100%;
-    font-size: 18px;
-  }
-  
-  a {
-    text-decoration: none;
-    font-size: 22px;
-    color: black;
-  }
-  
-  button:hover,
-  a:hover {
-    opacity: 0.5;
-  }
-  .img{
-    border-radius: 50%;
-  }
-  
+.btn {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover,
+a:hover {
+  opacity: 0.5;
+}

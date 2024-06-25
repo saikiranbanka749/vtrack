@@ -16,9 +16,9 @@
 .register-table{
     background-color: white;
     position: relative;
-    width: 61%;
+    width: 88%;
     height: 80vh ;
-    left: 250px;
+    left: 100px;
     top: 100px;
     border-radius: 5px;
 }
@@ -65,9 +65,7 @@
 .button-container {
     position: absolute;
     text-align: center;
-    /* margin-top: 20px; */
     top: 530px;
-    left: 390px;
 }
 
 .table-btn {

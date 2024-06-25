@@ -1,0 +1,11 @@
+.card1{
+    background-color: white;
+    width: 350px;
+    height: 100vh;
+    border-radius: 0%;
+}
+.card-p{
+    display:flex;
+    justify-content: center;
+    font-family: 'Times New Roman', Times, serif;
+}

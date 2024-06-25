@@ -104,7 +104,7 @@ export const empDetailsSubmit=[
     {
         label:"Photo",
         name:"photo",
-        value:"",
+        value:null,
         isError:false,
         errMsg:"* Photo is required!",
         type:"file"
@@ -113,10 +113,10 @@ export const empDetailsSubmit=[
         label:"Status",
         name:"status",
         value: [],
-        Options:["Active", "inActive"],
+        Options:["Active", "Resigned","Relieved"],
         isError:false,
         errMsg:"* Must pick one!",
-        type:"radio"
+        type:"select"
     },
     {
         label:"Updated",

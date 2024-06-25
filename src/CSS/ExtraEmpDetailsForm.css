@@ -1,0 +1,17 @@
+.emp-Form-card{
+    position: absolute;
+    display: flex;
+    /* align-items: center;
+    align-content: center; */
+    left: 500px;
+    top:100px
+    /* justify-content: center; */
+}
+/* .input-field{
+    height: 100px;
+    width: 200px;
+} */
+ .input-td{
+    position: absolute;
+    left: 150px;
+ }

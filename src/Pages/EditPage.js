@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import "../CSS/EditPage.css";
 import { empDetailsSubmit } from './EmployeeDetailsInputs';
@@ -20,7 +19,7 @@ const initialData = {
     relieving_date: '',
     blood_group: '',
     photo: '',
-    status: [],
+    status: '',
     updated_date: '',
     dob: '',
     anniversary_date: '',
@@ -35,52 +34,35 @@ const EditPage = () => {
     const [inputData, setInputData] = useState(initialData);
     const [isBtnValid, setIsBtnValid] = useState(false);
     const getData = useSelector(state => state.profileDetails);
-    const nav=useNavigate();
-    const [items, setItems] = useState([]);
-   
+    const nav = useNavigate();
+
     useEffect(() => {
         const storedData = localStorage.getItem('editData');
         if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          setInputData(parsedData);
-      
-        }  setIsBtnValid(true)
-      }, []);
-      useEffect(() => {
-        let editdata=Object.keys(getData)
-        if (editdata?.length>0) {
-          localStorage.setItem('editData', JSON.stringify(getData));
-    
-          const updatedData = {
-            ...getData,
-            joining_date: getData.joining_date?.split('T')[0],
-            relieving_date: getData.relieving_date?.split('T')[0],
-            updated_date: getData.updated_date?.split('T')[0],
-            dob: getData.dob?.split('T')[0],
-            anniversary_date: getData.anniversary_date?.split('T')[0]
-          };
-    
-          setInputData(updatedData);
-          setIsBtnValid(true);
+            const parsedData = JSON.parse(storedData);
+            setInputData(parsedData);
         }
-      }, [getData]);
+        setIsBtnValid(true);
+    }, []);
 
+    useEffect(() => {
+        let editdata = Object.keys(getData);
+        if (editdata?.length > 0) {
+            localStorage.setItem('editData', JSON.stringify(getData));
 
-    // useEffect(() => {
-    //     console.log("editDetails:", getData);
-    //     if (Object.keys(getData).length > 0) {
-    //         const formattedData = {
-    //             ...getData,
-    //             joining_date: getData.joining_date?.split('T')[0],
-    //             relieving_date: getData.relieving_date?.split('T')[0],
-    //             updated_date: getData.updated_date?.split('T')[0],
-    //             dob: getData.dob?.split('T')[0],
-    //             anniversary_date: getData.anniversary_date?.split('T')[0]
-    //         };
-    //         setInputData(formattedData);
-    //         setIsBtnValid(true);
-    //     }
-    // }, [getData]);
+            const updatedData = {
+                ...getData,
+                joining_date: getData.joining_date?.split('T')[0],
+                relieving_date: getData.relieving_date?.split('T')[0],
+                updated_date: getData.updated_date?.split('T')[0],
+                dob: getData.dob?.split('T')[0],
+                anniversary_date: getData.anniversary_date?.split('T')[0]
+            };
+
+            setInputData(updatedData);
+            setIsBtnValid(true);
+        }
+    }, [getData]);
 
     const onChangeHandler = (e) => {
         const { name, value, checked, type, files } = e.target;
@@ -98,10 +80,20 @@ const EditPage = () => {
         }
 
         setInputData(prevData => ({ ...prevData, [name]: newValue }));
+
+        // Enable/disable the relieving_date based on status
+        if (name === "status" && value !== "relieved") {
+            setInputData(prevData => ({ ...prevData, relieving_date: '' }));
+        }
     };
 
+    useEffect(() => {
+        console.log("::status:::", inputData.status);
+    }, [inputData])
+
+
     const editHandler = () => {
-        axios.get(`http://192.168.2.114:3003/employeePortal/get-employeePortal?e_id=${inputData.e_id}`)
+        axios.get(`http://localhost:3003/employeePortal/get-employeePortal?e_id=${inputData.e_id}`)
             .then(res => {
                 const fetchedData = res.data.data[0];
                 const formattedData = {
@@ -128,14 +120,11 @@ const EditPage = () => {
 
     const updateHandler = () => {
         const currDate = new Date();
-        console.log(":::relievingDate::::", inputData.relieving_date);
         const updated_date = `${currDate.getFullYear()}-${String(currDate.getMonth() + 1).padStart(2, '0')}-${String(currDate.getDate()).padStart(2, '0')}`;
         const formData = new FormData();
-        // Object.keys(inputData).forEach(key => {
-        //     formData.append(key, inputData[key]);
-        // });
-        // formData.append("updated_date", updated_date);
-        formData.append("id", getData.id);
+        // const nullData="null";
+        console.log(":::RelievingDate:::", inputData.relieving_date);
+        formData.append("id", inputData.id);
         formData.append("e_name", inputData.e_name);
         formData.append("email", inputData.email);
         formData.append("e_role", inputData.e_role);
@@ -146,7 +135,7 @@ const EditPage = () => {
         formData.append("gender", inputData.gender);
         formData.append("project_name", inputData.project_name);
         formData.append("joining_date", inputData.joining_date);
-        formData.append("relieving_date", inputData.relieving_date);
+        formData.append("relieving_date", inputData.status === "Relieved" ? inputData.relieving_date : null);
         formData.append("blood_group", inputData.blood_group);
         formData.append("photo", inputData.photo);
         formData.append("status", inputData.status);
@@ -159,9 +148,10 @@ const EditPage = () => {
         formData.append("permenant_address", inputData.permenant_address);
         formData.append("family_contact", inputData.family_contact);
 
-        axios.put(`http://192.168.2.114:3003/employeePortal/update-employeePortal`, formData, {
+        axios.put(`http://localhost:3003/employeePortal/update-employeePortal`, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
+                "authorization":sessionStorage.getItem("token")
             }
         })
             .then(res => {
@@ -169,12 +159,7 @@ const EditPage = () => {
                 setInputData(initialData);
                 localStorage.removeItem('editData');
                 alert("Data updated Successfully..");
-                nav('/home')
-                // alert("Data updated Successfully..");
-                // setInputData(initialData);
-                // localStorage.removeItem('editData');
-                // nav("/home")
-                // setIsBtnValid(false);
+                nav('/home');
             })
             .catch(error => {
                 console.error("Error updating data:", error);
@@ -195,9 +180,9 @@ const EditPage = () => {
                             {firstHalf.map((ele, i) => (
                                 <tr key={i}>
                                     <td className='td-label'>
-                                        {ele.label !== "Updated" && (
+                                        {ele.label !== "Updated" && inputData.status === "Relieved" ? ele.label : ele.label !== "Relieving date" && (
                                             <>
-                                                {ele.label} {ele.label === "Family Inforamation" ? <span> :</span> : <span style={{ color: "red" }}>*</span>}
+                                                {ele.label} {ele.label === "Family Inforamation" ? <span> :</span> : null}
                                             </>
                                         )}
                                     </td>
@@ -218,17 +203,29 @@ const EditPage = () => {
                                                 ))}
                                             </>
                                         ) : ele.type === "select" ? null : (
-                                            ele.label !== "Family Inforamation" && ele.name !== "id" && ele.name !== "updated_date" && (
-                                                <React.Fragment>
-                                                    <input
-                                                        name={ele.name}
-                                                        onChange={onChangeHandler}
-                                                        value={inputData[ele.name]}
-                                                        type={ele.type}
-                                                        className='inputField'
-                                                    />
-                                                </React.Fragment>
-                                            )
+                                            ele.label !== "Family Inforamation" && ele.name !== "id" && ele.name !== "updated_date" && inputData.status === "Relieved" ?
+                                                <>
+                                                    <React.Fragment>
+                                                        <input
+                                                            name={ele.name}
+                                                            onChange={onChangeHandler}
+                                                            value={inputData[ele.name]}
+                                                            type={ele.type}
+                                                            className='inputField'
+                                                        />
+                                                    </React.Fragment>
+                                                </>
+                                                : ele.name !== "relieving_date" && (
+                                                    <React.Fragment>
+                                                        <input
+                                                            name={ele.name}
+                                                            onChange={onChangeHandler}
+                                                            value={inputData[ele.name]}
+                                                            type={ele.type}
+                                                            className='inputField'
+                                                        />
+                                                    </React.Fragment>
+                                                )
                                         )}
                                         {ele.type === "select" && (
                                             <React.Fragment>
@@ -265,57 +262,67 @@ const EditPage = () => {
                         <tbody>
                             {secondHalf.map((ele, i) => (
                                 <tr key={i}>
-                                    <td className='td-label'>
+                                    <td className='td-label-1'>
                                         {ele.label !== "Updated" && (
                                             <>
-                                                {ele.label} {ele.label === "Family Inforamation" ? <span> :</span> : <span style={{ color: "red" }}>*</span>}
+                                                {ele.label} {ele.label === "Family Inforamation" ? <span> :</span> : null}
                                             </>
                                         )}
                                     </td>
                                     <td className='td-input'>
-                                        {ele.type === "file" ? null : ele.type === "radio" ? (
-                                            <>
-                                                {ele.Options.map((option, index) => (
-                                                    <div key={index}>
-                                                        <input
-                                                            name={ele.name}
-                                                            onChange={onChangeHandler}
-                                                            type={ele.type}
-                                                            value={option}
-                                                            checked={inputData[ele.name] && inputData[ele.name].includes(option)}
-                                                        />
-                                                        <label>{option}</label>
-                                                    </div>
-                                                ))}
-                                            </>
-                                        ) : ele.type === "select" ? null : (
-                                            ele.label !== "Family Inforamation" && ele.name !== "id" && ele.name !== "updated_date" && (
+                                        {ele.type === "file" ? null :
+                                            ele.type === "radio" ? (
+                                                <>
+                                                    {ele.Options.map((option, index) => (
+                                                        <div key={index}>
+                                                            <input
+                                                                name={ele.name}
+                                                                onChange={onChangeHandler}
+                                                                type={ele.type}
+                                                                value={option}
+                                                                checked={inputData[ele.name] && inputData[ele.name].includes(option)}
+                                                            />
+                                                            <label>{option}</label>
+                                                        </div>
+                                                    ))}
+                                                </>
+                                            ) : ele.type === "select" ? (
                                                 <React.Fragment>
-                                                    <input
+                                                    <select
+                                                        className='inputField'
+                                                        onChange={onChangeHandler}
+                                                        name={ele.name}
+                                                        value={inputData[ele.name] || ""}
+                                                    >
+                                                        <option value="">Select</option>
+                                                        {ele.Options.map((option, index) => (
+                                                            <option value={option} key={index}>{option}</option>
+                                                        ))}
+                                                    </select>
+                                                </React.Fragment>
+                                            ) : ele.type === "textArea" ? (
+                                                <React.Fragment>
+                                                    <textarea
                                                         name={ele.name}
                                                         onChange={onChangeHandler}
                                                         value={inputData[ele.name]}
-                                                        type={ele.type}
                                                         className='inputField'
                                                     />
                                                 </React.Fragment>
+                                            ) : (
+                                                ele.label !== "Family Inforamation" && ele.name !== "id" && ele.name !== "updated_date" && (
+                                                    <React.Fragment>
+                                                        <input
+                                                            name={ele.name}
+                                                            onChange={onChangeHandler}
+                                                            value={inputData[ele.name]}
+                                                            type={ele.type}
+                                                            className='inputField'
+                                                        />
+                                                    </React.Fragment>
+                                                )
                                             )
-                                        )}
-                                        {ele.type === "select" && (
-                                            <React.Fragment>
-                                                <select
-                                                    className='inputField'
-                                                    onChange={onChangeHandler}
-                                                    name={ele.name}
-                                                    value={inputData[ele.name] || ""}
-                                                >
-                                                    <option value="">Select</option>
-                                                    {ele.Options.map((option, index) => (
-                                                        <option value={option} key={index}>{option}</option>
-                                                    ))}
-                                                </select>
-                                            </React.Fragment>
-                                        )}
+                                        }
                                         {ele.type === "file" && (
                                             <React.Fragment>
                                                 <input
@@ -332,7 +339,7 @@ const EditPage = () => {
                         </tbody>
                     </table>
                 </div>
-                <div style={{ textAlign: "center", marginTop: "20px" }}>
+                <div style={{ textAlign: "center" }}>
                     {isBtnValid ? (
                         <button onClick={updateHandler} className='table-btn-update'>Update</button>
                     ) : (
