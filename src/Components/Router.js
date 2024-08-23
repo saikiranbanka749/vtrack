@@ -52,13 +52,21 @@ import Loginpage from '../Pages/Loginpage';
 import ProtectedRouting from './ProtectedRouting';
 import ExtraEmpDetailsForm from '../Pages/ExtraEmpDetailsForm';
 import ForgotPwd from '../Pages/ForgotPwd';
+import HomePage from '../Pages/HomePage';
+import LMSPage from '../Pages/LMSPage';
+import LMS_home from '../Pages/LMS_home';
+import LMS_leaveReport from '../Pages/LMS_leaveReport';
+import LeaveFromEmp from '../Pages/LeaveFromEmp';
 
 const Router = () => {
+  const role = sessionStorage.getItem("role");
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Loginpage />} />
         <Route path='/forgotPwd' element={<ForgotPwd />} />
+        <Route path='/home-page' element={<HomePage />} />
         <Route element={<ProtectedRouting />}>
           <Route path='/home' element={<Home />}>
             <Route index element={<Table />} />
@@ -68,6 +76,12 @@ const Router = () => {
             <Route path='delete' element={<DeletePage />} />
           </Route>
           <Route path='/skillsetForm' element={<ExtraEmpDetailsForm />} />
+          <Route path='/ViewProfile' element={<ViewProfile />} />
+          <Route path='/LMS-page' element={<LMSPage/>}>
+          <Route path="LMS-home" element={<LMS_home />} />
+          <Route path="LMS-leaveFromEmp" element={<LeaveFromEmp/>}/>
+          <Route path="LMS-leaveReport" element={<LMS_leaveReport />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
@@ -75,4 +89,5 @@ const Router = () => {
 };
 
 export default Router;
+
 

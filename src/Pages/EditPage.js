@@ -1,39 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import "../CSS/EditPage.css";
-import { empDetailsSubmit } from './EmployeeDetailsInputs';
+import { inputFieldsData } from './EmpInputDetails';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const initialData = {
-    e_name: '',
-    email: '',
-    e_role: '',
-    designation: "",
-    manager: "",
-    e_location: "",
-    contact: '',
-    gender: [],
-    project_name: '',
-    joining_date: '',
-    relieving_date: '',
+    emp_first_name: '',
+    emp_last_name: '',
+    gender: "",
+    doj: "",
+    email: "",
+    manager_id: '',
+    current_designation: "",
+    contact_number: '',
+    role: "",
+    location: "",
+    project_name: "",
+    emp_photo: '',
     blood_group: '',
-    photo: '',
-    status: '',
-    updated_date: '',
-    dob: '',
+    title: "",
+    department_id: "",
+    nationality: "",
+    primary_skill: "",
     anniversary_date: '',
+    personal_email: "",
+    family_contact: '',
+    dob: "",
     father_name: '',
-    mother_name: '',
+    mother_name: "",
+    relieving_date: "",
     present_address: "",
-    permenant_address: "",
-    family_contact: ""
+    status: "",
+    perminent_address: "",
 };
 
 const EditPage = () => {
     const [inputData, setInputData] = useState(initialData);
     const [isBtnValid, setIsBtnValid] = useState(false);
     const getData = useSelector(state => state.profileDetails);
+    console.log("::getDat::", getData);
     const nav = useNavigate();
 
     useEffect(() => {
@@ -45,28 +51,46 @@ const EditPage = () => {
         setIsBtnValid(true);
     }, []);
 
+    const normalizeGender = (gender) => {
+        if (gender.toLowerCase() === "m" || gender.toLowerCase() === "male") {
+            return "male";
+        } else if (gender.toLowerCase() === "f" || gender.toLowerCase() === "female") {
+            return "female";
+        }
+        return gender; // return as is for 'Others' or any other gender value
+    };
+
     useEffect(() => {
-        let editdata = Object.keys(getData);
-        if (editdata?.length > 0) {
-            localStorage.setItem('editData', JSON.stringify(getData));
+        const departmentDataNum = {
+            10: "Recruitments", 100: "Operations UAE", 110: "Operations UK", 20: "Sales USA",
+            30: "Development", 40: "Sales UAE", 50: "QA", 60: "Network", 70: "Finance", 80: "Operations INDIA", 90: "Operations USA"
+        };
 
-            const updatedData = {
-                ...getData,
-                joining_date: getData.joining_date?.split('T')[0],
-                relieving_date: getData.relieving_date?.split('T')[0],
-                updated_date: getData.updated_date?.split('T')[0],
-                dob: getData.dob?.split('T')[0],
-                anniversary_date: getData.anniversary_date?.split('T')[0]
-            };
+        if (getData && Object.keys(getData).length > 0) {
+            const newValueData = departmentDataNum[getData.department_id];
+            if (newValueData) {
+                localStorage.setItem('editData', JSON.stringify(getData));
 
-            setInputData(updatedData);
-            setIsBtnValid(true);
+                const updatedData = {
+                    ...getData,
+                    doj: getData.doj?.split('T')[0],
+                    relieving_date: getData.relieving_date?.split('T')[0],
+                    dob: getData.dob?.split('T')[0],
+                    anniversary_date: getData.anniversary_date?.split('T')[0],
+                    department_id: newValueData,
+                    gender: normalizeGender(getData.gender) // normalize gender value
+                };
+
+                setInputData(updatedData);
+                setIsBtnValid(true);
+            }
         }
     }, [getData]);
 
     const onChangeHandler = (e) => {
         const { name, value, checked, type, files } = e.target;
         let newValue = value;
+
         if (type === "checkbox") {
             if (!inputData[name]) {
                 newValue = [value];
@@ -81,26 +105,19 @@ const EditPage = () => {
 
         setInputData(prevData => ({ ...prevData, [name]: newValue }));
 
-        // Enable/disable the relieving_date based on status
         if (name === "status" && value !== "relieved") {
             setInputData(prevData => ({ ...prevData, relieving_date: '' }));
         }
     };
 
-    useEffect(() => {
-        console.log("::status:::", inputData.status);
-    }, [inputData])
-
-
     const editHandler = () => {
-        axios.get(`http://localhost:3003/employeePortal/get-employeePortal?e_id=${inputData.e_id}`)
+        axios.get(`http://localhost:3003/employeeDetails/getAll_emp_details?e_id=${inputData.emp_id}`)
             .then(res => {
                 const fetchedData = res.data.data[0];
                 const formattedData = {
                     ...fetchedData,
-                    joining_date: fetchedData.joining_date?.split('T')[0],
+                    doj: fetchedData.doj?.split('T')[0],
                     relieving_date: fetchedData.relieving_date?.split('T')[0],
-                    updated_date: fetchedData.updated_date?.split('T')[0],
                     dob: fetchedData.dob?.split('T')[0],
                     anniversary_date: fetchedData.anniversary_date?.split('T')[0]
                 };
@@ -117,41 +134,54 @@ const EditPage = () => {
                 console.log("Error fetching employee details:", error);
             });
     };
-
+// console.log("::::photoData:::",inputData.emp_photo);
     const updateHandler = () => {
+        console.log("::::photoData:::",inputData.emp_photo)
+        const departmentData = {
+            "Recruitments": 10, "Operations UAE": 100, "Operations UK": 110, "Sales USA": 20,
+            "Development": 30, "Sales UAE": 40, "QA": 50, "Network": 60, "Finance": 70, "Operations INDIA": 80, "Operations USA": 90
+        };
+
+        const depData = departmentData[inputData.department_id];
         const currDate = new Date();
         const updated_date = `${currDate.getFullYear()}-${String(currDate.getMonth() + 1).padStart(2, '0')}-${String(currDate.getDate()).padStart(2, '0')}`;
         const formData = new FormData();
-        // const nullData="null";
-        console.log(":::RelievingDate:::", inputData.relieving_date);
-        formData.append("id", inputData.id);
-        formData.append("e_name", inputData.e_name);
-        formData.append("email", inputData.email);
-        formData.append("e_role", inputData.e_role);
-        formData.append("designation", inputData.designation);
-        formData.append("manager", inputData.manager);
-        formData.append("e_location", inputData.e_location);
-        formData.append("contact", inputData.contact);
+        formData.append("emp_id", getData.emp_id);
+        formData.append("emp_first_name", inputData.emp_first_name);
+        formData.append("emp_last_name", inputData.emp_last_name);
         formData.append("gender", inputData.gender);
-        formData.append("project_name", inputData.project_name);
-        formData.append("joining_date", inputData.joining_date);
-        formData.append("relieving_date", inputData.status === "Relieved" ? inputData.relieving_date : null);
-        formData.append("blood_group", inputData.blood_group);
-        formData.append("photo", inputData.photo);
+        formData.append("doj", inputData.doj);
+        formData.append("email", inputData.email);
+        formData.append("manager_id", inputData.manager_id);
+        formData.append("current_designation", inputData.current_designation);
+        formData.append("department_id", depData);
+        formData.append("contact_number", inputData.contact_number);
+        formData.append("role", inputData.role);
         formData.append("status", inputData.status);
-        formData.append("updated_date", updated_date);
+        formData.append("location", inputData.location);
+        formData.append("project_name", inputData.project_name);
+        formData.append("emp_photo", inputData.emp_photo);
+
+        formData.append("title", inputData.title);
+        formData.append("primary_skill", inputData.primary_skill);
+        formData.append("nationality", inputData.nationality);
         formData.append("dob", inputData.dob);
-        formData.append("anniversary_date", inputData.anniversary_date);
         formData.append("father_name", inputData.father_name);
         formData.append("mother_name", inputData.mother_name);
+        formData.append("personal_email", inputData.personal_email);
         formData.append("present_address", inputData.present_address);
-        formData.append("permenant_address", inputData.permenant_address);
-        formData.append("family_contact", inputData.family_contact);
+        formData.append("perminent_address", inputData.perminent_address);
 
-        axios.put(`http://localhost:3003/employeePortal/update-employeePortal`, formData, {
+        formData.append("updated_date", updated_date);
+        formData.append("blood_group", inputData.blood_group);
+        formData.append("anniversary_date", inputData.anniversary_date);
+        formData.append("family_contact", inputData.family_contact);
+        formData.append("relieving_date", inputData.status === "Relieved" ? inputData.relieving_date : null);
+
+        axios.put('http://localhost:3003/employeeDetails/update_emp_details', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                "authorization":sessionStorage.getItem("token")
+                "authorization": sessionStorage.getItem("token")
             }
         })
             .then(res => {
@@ -167,9 +197,9 @@ const EditPage = () => {
             });
     };
 
-    const half = Math.ceil(empDetailsSubmit.length / 2);
-    const firstHalf = empDetailsSubmit.slice(0, half);
-    const secondHalf = empDetailsSubmit.slice(half);
+    const half = Math.ceil(inputFieldsData.length / 2);
+    const firstHalf = inputFieldsData.slice(0, half);
+    const secondHalf = inputFieldsData.slice(half);
 
     return (
         <div className='content'>

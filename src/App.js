@@ -5,6 +5,14 @@ import ContentPage from "./Pages/ContentPage";
 import ExtraEmpDetailsForm from "./Pages/ExtraEmpDetailsForm";
 import ChipInput from "./Pages/ExtraEmpDetailsForm";
 import ForgotPwd from "./Pages/ForgotPwd";
+import SubmitForm from "./Pages/SubmitForm";
+import EncryptDecrypt from "./Pages/TestPage";
+import EditPage from "./Pages/EditPage";
+import TestPage from "./Pages/TestPage";
+import HomePage from "./Pages/HomePage";
+import LMSPage from "./Pages/LMSPage";
+import LMS_Routing from "./Components/LMS_Routing";
+import LMS_home from "./Pages/LMS_home";
 // import Loginpage from "./Pages/Loginpage";
 
 function App() {
@@ -15,9 +23,17 @@ function App() {
       {/* <ContentPage/> */}
       {/* <Loginpage/> */}
       <Router/>
+      {/* <LMS_Routing/> */}
+      {/* <HomePage/> */}
+      {/* <TestPage/> */}
       {/* <ExtraEmpDetailsForm/> */}
       {/* <ChipInput/> */}
       {/* <ForgotPwd/> */}
+      {/* <SubmitForm/> */}
+      {/* <EditPage/> */}
+      {/* <EncryptDecrypt/> */}
+      {/* <LMSPage/> */}
+      {/* <LMS_home/> */}
     </div>
   );
 }
