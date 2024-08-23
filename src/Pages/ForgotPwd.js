@@ -4,18 +4,19 @@ import emailjs from '@emailjs/browser';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const ForgotPwd = () => {
+const ForgotempPassword = () => {
     const [randomData, setRandomData] = useState("");
-    const [emailData, setEmailData] = useState("");
+    const [empId, setEmpId] = useState("");
     const [confirmInput, setConfirmInput] = useState({
-        pwd: "",
-        confirmPwd: ""
+        emp_password: "",
+        confirmemp_password: ""
     });
-    const [isVaild, setIsValid] = useState(true);
+    const [isValid, setIsValid] = useState(true);
     const [userData, setUserData] = useState({});
     const nav = useNavigate();
     const [input, setInput] = useState("");
-    const [isOptValid, setIsOptValid] = useState(false);
+    const [isOtpValid, setIsOtpValid] = useState(false);
+    const [showPassword,setShowPassword]=useState(false);
 
     useEffect(() => {
         let result = '';
@@ -39,33 +40,33 @@ const ForgotPwd = () => {
 
     const confirmSubmitHandler = (e) => {
         e.preventDefault();
-        const { pwd, confirmPwd } = confirmInput;
-        const id = userData.id;
-
-        const data = { id, pwd };
-        if (pwd === confirmPwd) {
-            axios.put("http://localhost:3003/employeePortal/confirmPwd-employeePortal", data).then((res) => {
-                alert("Password changed successfully");
-                nav("/");
-                setConfirmInput({
-                    confirmPwd: "",
-                    pwd: ""
-                });
-            }).catch(err => console.log(err));
+        
+        const { emp_password, confirmemp_password } = confirmInput;
+        const emp_id = userData.emp_id;
+        const data = { emp_id, emp_password };
+    
+        if (emp_password === confirmemp_password) {
+            axios.post("http://localhost:3003/employeeDetails/confirmemp_password_emp_details", data)
+                .then((res) => {
+                    alert("Password changed successfully");
+                    nav("/");
+                    setConfirmInput({
+                        emp_password: "",
+                        confirmemp_password: ""
+                    });
+                })
+                .catch(err => console.log(err));
         } else {
-            alert("Incorrect pin");
+            alert("Passwords do not match");
         }
-
-        console.log("data:::", data);
     };
 
     const otpHandler = (e) => {
         e.preventDefault();
         if (input === randomData) {
-            setIsOptValid(true);
-        }
-        else{
-            alert("In correct OTP");
+            setIsOtpValid(true);
+        } else {
+            alert("Incorrect OTP");
         }
     };
 
@@ -73,19 +74,18 @@ const ForgotPwd = () => {
         const serviceId = 'service_6l2ddvt';
         const templateId = 'template_uvb14vn';
         const userId = 'ODfkcgDBY15pDlkE0';
-        const templateParams = {
-            to_Subject: 'Employee Credentials',
-            to_email: emailData,
-            message: randomData
-        };
-
-        axios.get(`http://localhost:3003/employeePortal/get-employeePortal`, { params: { email: emailData } })
+       
+        axios.get(`http://localhost:3003/employeeDetails/forgot_emp_detials?emp_id=${empId}`)
             .then((res) => {
                 setUserData(res.data.data[0]);
-                console.log(res.data.data[0]);
+                const templateParams = {
+                    to_Subject: 'Employee Credentials',
+                    to_email: res.data.data[0].email,
+                    message: randomData
+                };
                 setIsValid(false);
-                alert("Please check the OTP in your email id");
-                setEmailData("");
+                alert("Please check the OTP in your email");
+                setEmpId("");
                 return emailjs.send(serviceId, templateId, templateParams, userId);
             })
             .then(() => {
@@ -97,13 +97,17 @@ const ForgotPwd = () => {
             });
     };
 
+    const passwordToggle=()=>{
+        setShowPassword(prev=>!prev);
+    }
+
     return (
         <div className="card-p">
             <div className="card1">
                 <div>
                     <img src="/assets/vtrack-logo.png" alt="Vtrack logo" />
                 </div>
-                {isOptValid ? (
+                {isOtpValid ? (
                     <>
                         <strong style={{ fontFamily: "cursive", position: "absolute", top: "330px", marginLeft: "90px" }}>Create new Password</strong>
                         <div>
@@ -113,9 +117,9 @@ const ForgotPwd = () => {
                                     <tr>
                                         <td>
                                             <input
-                                                type="password"
-                                                value={confirmInput.pwd}
-                                                name="pwd"
+                                                type={showPassword ?"text":"password"}
+                                                value={confirmInput.emp_password}
+                                                name="emp_password"
                                                 style={{
                                                     height: "25px",
                                                     fontWeight: "bolder",
@@ -131,8 +135,8 @@ const ForgotPwd = () => {
                                         <td>
                                             <input
                                                 type="password"
-                                                name="confirmPwd"
-                                                value={confirmInput.confirmPwd}
+                                                name="confirmemp_password"
+                                                value={confirmInput.confirmemp_password}
                                                 style={{
                                                     height: "25px",
                                                     fontWeight: "bolder",
@@ -142,6 +146,11 @@ const ForgotPwd = () => {
                                                 onChange={changeHandler}
                                                 placeholder="Confirm password"
                                             />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" checked={showPassword} onClick={passwordToggle}/>Show password
                                         </td>
                                     </tr>
                                     <tr>
@@ -167,7 +176,7 @@ const ForgotPwd = () => {
                         </div>
                     </>
                 ) : (
-                    isVaild ? (
+                    isValid ? (
                         <>
                             <strong style={{ fontFamily: "cursive", position: "absolute", top: "330px", marginLeft: "60px" }}>Enter your registered email id</strong>
                             <table align="center" style={{ position: "absolute", top: "370px", marginLeft: "60px" }}>
@@ -177,8 +186,8 @@ const ForgotPwd = () => {
                                         <td>
                                             <input
                                                 required
-                                                onChange={(e) => setEmailData(e.target.value)}
-                                                value={emailData}
+                                                onChange={(e) => setEmpId(e.target.value)}
+                                                value={empId}
                                                 style={{
                                                     height: "25px",
                                                     fontWeight: "bolder",
@@ -220,7 +229,7 @@ const ForgotPwd = () => {
                                     <tr>
                                         <td>
                                             <input
-                                                type="password"
+                                                type={showPassword ?"text":"password"}
                                                 name="otp"
                                                 value={input}
                                                 onChange={(e) => setInput(e.target.value)}
@@ -231,6 +240,11 @@ const ForgotPwd = () => {
                                                     fontFamily: "'Times New Roman', Times, serif"
                                                 }}
                                             />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{fontFamily:"fantasy"}}>
+                                            <input type="checkbox" checked={showPassword} onClick={passwordToggle}/>Show OTP
                                         </td>
                                     </tr>
                                     <tr>
@@ -261,4 +275,4 @@ const ForgotPwd = () => {
     );
 };
 
-export default ForgotPwd;
+export default ForgotempPassword;

@@ -1,11 +1,11 @@
 .content{
     background-color: white;
-    height: 79vh;
+    height: 86vh;
     width: 60vw;
     border-radius: 4px;
     position: absolute;
     left: 300px;
-    top: 100px
+    top: 97px
 }
 .table-btn-edit{
     position: relative;
@@ -23,8 +23,9 @@
 }
 .table-btn-update{
     position: relative;
-    top: 50px;
-    left:65px;
+    top: 40px;
+    /* left:25px; */
+    right: 20px;
     background-color: orange;
     color: white;
     /* padding-top: 20px; */
@@ -42,14 +43,14 @@
  } */
  .emp-form-table{
     position: relative;
-    left: 100px;
-    width: 90%;
+    /* left: 120px; */
+    width: 30vw;
     top: 20px;
 }
 .emp-form-table2{
     position: relative;
-    left: 150px;
-    width: 120%;
+    /* left: 160px; */
+    width: 30vw;
     top: 20px;
 }
 /* .register-table{
@@ -75,11 +76,11 @@
 } */
 .td-label{
     text-align: left;
-    width: 35%;
+    /* width: 30%; */
 }
 .td-label-1{
     text-align: left;
-    /* width: 60%; */
+    /* width: 30%; */
 }
 .inputField{
     outline-color: skyblue;

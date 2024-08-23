@@ -1,4 +1,6 @@
 export const initialState={
     profileDetails:[],
-    selectedDate:""
+    selectedDate:"",
+    userData:[],
+    skillSetData:[]
 }

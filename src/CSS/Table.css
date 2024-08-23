@@ -43,9 +43,8 @@
     display: inline-block;
     padding: 5px 10px; 
     font-size: 18px; /* Smaller font size */
-    color:black; /* Link color */
+    color: black; /* Link color */
     text-decoration: none; /* Remove underline */
-    /* border: 1px solid blue; Border around the link */
     border-radius: 3px; /* Slightly rounded corners */
     transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for background and color */
 }
@@ -64,13 +63,11 @@
     outline: none; /* Remove default focus outline */
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Custom focus outline */
 }
-/* Existing styles */
+
 .selectBox {
     position: relative;
     top: 100px;
     left: 50px;
-    /* border-style: none; */
-
 }
 
 .selectBox-ele {
@@ -78,10 +75,8 @@
     align-items: center;
     outline: none;
     width: 15%;
-    /* padding: 5px; */
     border-radius: 10px;
     font-weight: bold;
-    /* border-style: none; */
     border: 1px solid #D1D5DB; /* gray-300 */
     overflow: hidden;
     position: relative; /* Ensure relative positioning for absolute children */
@@ -102,7 +97,6 @@
 
 .search-input:focus {
     border: none;
-    /* outline: 2px solid #3B82F6;  */
 }
 
 .search-button {
@@ -124,6 +118,7 @@
 .search-button:focus {
     outline: none;
 }
+
 
 /* Additional style for .empForm-page */
 .empForm-page {

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import "../CSS/profile.css";
 import { useState, useEffect } from 'react';
 import LZString from 'lz-string'; 
+import Header from '../Components/Header';
 
 const ViewProfile = () => {
     const [storedData, setStoredData] = useState(null);
@@ -23,10 +24,12 @@ const ViewProfile = () => {
 
     useEffect(() => {
         const data = localStorage.getItem('ViewData');
+        // console.log("data:::==",data);
         if (data) {
             setStoredData(JSON.parse(LZString.decompressFromUTF16(data)));
         }
     }, []);
+    // console.log("storedData::",storedData);
 
     const arrayBufferToBase64 = (buffer) => {
         let binary = '';
@@ -44,12 +47,12 @@ const ViewProfile = () => {
         return [key, value];
     });
 
-    const det = filteredData.filter(([key, value]) => key !== 'photo' && key !== 'pwd');
+    const det = filteredData?.filter(([key, value]) => key !== 'emp_photo' && key !== 'emp_password');
     console.log(det);
 
-    const half = Math.ceil(det.length / 2);
-    const firstHalf = det.slice(0, half);
-    const secondHalf = det.slice(half);
+    const half = Math.ceil(det?.length / 2);
+    const firstHalf = det?.slice(0, half);
+    const secondHalf = det?.slice(half);
 
     const formatKey = (key) => {
         return key
@@ -62,24 +65,31 @@ const ViewProfile = () => {
         window.open(`http://localhost:3003/files/${pdf}`);
     }
 
+    // useEffect(()=>{
+    //     sessionStorage.get
+    // },[])
+
     return (
+        <div>
+            <Header/>
         <div className='container'>
-            <div className="container2">
+            <div style={sessionStorage.getItem("role")==="hr"?null:{top:"105px"}} className="container2">
                 <div className="card2">
-                    <div style={{ position: "absolute", width:"100vw", left: "20px", top: "20px", backgroundColor:"white", zIndex:"4" }}>
+                    <div style={{ position: "absolute", width:"100vw",padding:"7px", left: "20px", top: "0px", backgroundColor:"white", zIndex:"4" }}>
                         <img 
                             className="img" 
-                            src={`data:image/jpeg;base64,${arrayBufferToBase64(storedData?.photo?.data)}`} 
+                            // src={`data:image/jpeg;base64,${arrayBufferToBase64(storedData?.emp_photo)}`} 
+                            src={`http://localhost:3003/images/${storedData?.emp_photo}`}
                             alt="Employee Photo" 
-                            style={{ width: '120px', height: '120px' }} 
+                            style={{ width: '130px', height: '130px' }} 
                         />
                     </div>
-                    <div style={{ marginTop: "150px", display: "flex", justifyContent: "space-between", zIndex:"3" }}>
+                    <div style={{ marginTop: "120px", display: "flex", justifyContent: "space-between", zIndex:"3" }}>
                         <div>
                             <table>
                                 <thead></thead>
                                 <tbody>
-                                    {firstHalf.map(([key, value], index) => (
+                                    {firstHalf?.map(([key, value], index) => (
                                         <tr key={index}>
                                             <td style={{ fontFamily: "Times New Roman", padding: "10px", fontWeight: "bold" }}>
                                                 {formatKey(key)}
@@ -97,10 +107,10 @@ const ViewProfile = () => {
                             <table>
                                 <thead></thead>
                                 <tbody>
-                                    {secondHalf.map(([key, value], index) => (
+                                    {secondHalf?.map(([key, value], index) => (
                                         <tr key={index}>
                                             <td style={{ fontFamily: "Times New Roman", padding: "10px", fontWeight: "bold" }}>
-                                                {formatKey(key)}
+                                            {formatKey(key)}
                                             </td>
                                             <td>:</td>
                                             <td style={{ fontFamily: "Times New Roman", padding: "10px", maxWidth: "250px", wordWrap: "break-word", whiteSpace: "pre-wrap" }}>
@@ -117,6 +127,7 @@ const ViewProfile = () => {
                 </div>
             </div>
         </div>
+            </div>
     );
 };
 

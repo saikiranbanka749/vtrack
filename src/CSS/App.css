@@ -1,7 +1,7 @@
 .app-p{
     height: 100vh;
     width: 100vw;
-    background-color: lightgray;
+    /* background-color: rgb(137, 211, 137); */
     overflow: hidden;
     background: url("/public//assets//vensai-bg.jpg");
 }
